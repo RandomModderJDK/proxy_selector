@@ -1,6 +1,6 @@
 # proxy
 
-This plugin lets you get proxy settings for specif URL.
+This plugin lets you retrieve proxy settings for specific URL.
 
 Currently iOS and Android supported.
 
@@ -8,7 +8,7 @@ On Android it uses `ProxySelector` from `java.net`.
 On iOS it uses `CFNetworkCopySystemProxySettings`/`CFNetworkCopyProxiesForURL` and for PAC (Script/Url) `CFNetworkExecuteProxyAutoConfigurationURL`/`CFNetworkExecuteProxyAutoConfigurationScript` to resolve PAC script.
 
 FTP (iOS only) and SOCKS not tested.
-
+Credentials (iOS) not supported.
 ## How to test
 
 You can use your own proxy server or any other proxy tools for testing purpose. I used Proxyman.
@@ -16,7 +16,7 @@ You can use your own proxy server or any other proxy tools for testing purpose. 
 1. Install Proxyman
 2. Set up your physical device with Proxyman. Goal is to be able track all traffic in Proxyman
 3. Open browser and enter some random address
-4. Proxyman dispplay all requests
+4. Proxyman displays all requests
 5. Run example project on your device
 6. Execute entered URL
 7. No proxy displayed in Proxyman
@@ -26,8 +26,8 @@ You can use your own proxy server or any other proxy tools for testing purpose. 
 
 ### To test pac.
 
-You need nginx on your device and a pac.
-For easy set up i used this PAC whichs points to Proxyman proxy
+You need nginx on your device and a pac file.
+For easy set up i used this PAC which points to Proxyman proxy
 
 ```javascript
 function FindProxyForURL (url, host) {
@@ -37,7 +37,7 @@ function FindProxyForURL (url, host) {
   }
 ```
 
-and nginx conf with root is path to your pac file.
+and nginx.conf with root as path to dir ith contained pac file.
 
 ```
 events {}
@@ -49,7 +49,6 @@ http {
         location / {
             # path to root where testfile.pac located
             root /../../../;
-            index testfile.pac;
         }
     }
 }
@@ -58,6 +57,10 @@ After this reload or start nginx. Your PAC should now be accessible under your l
 
 Enter your ip address as URL in your proxy setting of the device. After this you can test PAC with the example.
 
+```
+Example:
+1111.1111.1111.1111/testfile.pac
+```
 ## Source 
 
 Following sources were used to implement this plugin.
