@@ -1,4 +1,4 @@
-package com.example.proxy
+package io.relution.proxy_selector
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -20,9 +20,9 @@ import java.net.URI
  * Simple wrapper of ProxySelector (java.net.ProxySelector)
  * Will convert List<Proxy> to a custom json representation of proxies. Check convertProxyListToJson method
  */
-class ProxyPlugin: FlutterPlugin, MethodCallHandler {
+class ProxySelectorPlugin: FlutterPlugin, MethodCallHandler {
 
-  private val methodChannelName:String = "proxy"
+  private val methodChannelName:String = "proxy_selector"
   private val getSystemProxyForUriMethodName:String = "getSystemProxyForUri"
   private var manager: ConnectivityManager? = null
   /// The MethodChannel that will the communication between Flutter and native Android

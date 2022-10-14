@@ -6,10 +6,10 @@ import UIKit
  For PAC URL/Script it will evaluate it and adds the returned proxy settings.
  Return a jso list of all retrieved proxies.
  */
-public class SwiftProxyPlugin: NSObject, FlutterPlugin {
+public class SwiftProxySelectorPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "proxy", binaryMessenger: registrar.messenger())
-        let instance = SwiftProxyPlugin()
+        let channel = FlutterMethodChannel(name: "proxy_selector", binaryMessenger: registrar.messenger())
+        let instance = SwiftProxySelectorPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     
@@ -133,15 +133,9 @@ public class ProxieService {
         
         if let server = proxy[kCFProxyHostNameKey as String] as? String{
             if let port = proxy[kCFProxyPortNumberKey as String]  as? Int{
-                let user  = (settings as NSDictionary)["HTTPUser"] as? String;
+                //let user  = (settings as NSDictionary)["HTTPUser"] as? String;
+                proxies.append(Proxy(host: server, port: String(port), user: nil, password: nil, type: proxy[kCFProxyTypeKey as String] as! String));
                 
-                if(user != nil){
-                    if let password = readPasswordOfUser(user: user!, server: server, port: String(port), isHttps: false){
-                        proxies.append(Proxy(host: server, port: String(port), user: user, password: password, type: proxy[kCFProxyTypeKey as String] as! String));
-                    }
-                }else{
-                    proxies.append(Proxy(host: server, port: String(port), user: nil, password: nil, type: proxy[kCFProxyTypeKey as String] as! String));
-                }
             }
         }
     }
@@ -149,15 +143,9 @@ public class ProxieService {
     private func addHTTPSProxy(_ settings: Dictionary<String, AnyObject>, _ proxy: [String:AnyObject] ){
         if let server = proxy[kCFProxyHostNameKey as String] as? String{
             if let port = proxy[kCFProxyPortNumberKey as String]  as? Int{
-                let user  = settings["HTTPProxyUsername"] as? String;
+                //let user  = settings["HTTPProxyUsername"] as? String;
+                proxies.append(Proxy(host: server, port: String(port), user: nil, password: nil, type: proxy[kCFProxyTypeKey as String] as! String));
                 
-                if(user != nil){
-                    if let password = readPasswordOfUser(user: user!, server: server, port: String(port), isHttps: true){
-                        proxies.append(Proxy(host: server, port: String(port), user: user, password: password, type: proxy[kCFProxyTypeKey as String] as! String));
-                    }
-                }else{
-                    proxies.append(Proxy(host: server, port: String(port), user: nil, password: nil, type: proxy[kCFProxyTypeKey as String] as! String));
-                }
             }
         }
     }
@@ -259,57 +247,59 @@ public class ProxieService {
     }
     
     
-    func readPasswordOfUser(user: String, server: String, port: String,isHttps:  Bool ) -> String? {
-        let query: [String: AnyObject] = [
-            kSecClass as String: kSecClassInternetPassword,
-            kSecAttrServer as String: server as CFString,
-            kSecAttrProtocolHTTPS as String: (isHttps) ? kCFBooleanTrue : kCFBooleanFalse,
-            kSecAttrProtocolHTTP as String: (isHttps) ? kCFBooleanFalse : kCFBooleanTrue,
-            kSecAttrPort as String: port as CFString,
-            kSecAttrAccount as String: user  as CFString,
-            
-            // kSecMatchLimitOne indicates keychain should read
-            // only the most recent item matching this query
-            kSecMatchLimit as String: kSecMatchLimitOne,
-            
-            // kSecReturnData is set to kCFBooleanTrue in order
-            // to retrieve the data for the item
-            kSecReturnData as String: kCFBooleanTrue,
-            kSecReturnAttributes as String: kCFBooleanTrue
-            
-            
-        ]
-        
-        // SecItemCopyMatching will attempt to copy the item
-        // identified by query to the reference itemCopy
-        var itemCopy: AnyObject?
-        let status = SecItemCopyMatching(
-            query as CFDictionary,
-            &itemCopy
-        )
-        
-        // errSecItemNotFound is a special status indicating the
-        // read item does not exist. Throw itemNotFound so the
-        // client can determine whether or not to handle
-        // this case
-        guard status == errSecItemNotFound else {
-            return nil;
-        }
-        
-        // Any status other than errSecSuccess indicates the
-        // read operation failed.
-        guard status != errSecSuccess else {
-            return nil;
-        }
-        
-        // This implementation of KeychainInterface requires all
-        // items to be saved and read as Data.
-        guard let password = itemCopy as? Data else {
-            return nil;
-        }
-        
-        return String(decoding: password, as: UTF8.self)
-    }
+    /*
+     TODO maybe usefull
+     func readPasswordOfUser(user: String, server: String, port: String,isHttps:  Bool ) -> String? {
+     let query: [String: AnyObject] = [
+     kSecClass as String: kSecClassInternetPassword,
+     kSecAttrServer as String: server as CFString,
+     kSecAttrProtocolHTTPS as String: (isHttps) ? kCFBooleanTrue : kCFBooleanFalse,
+     kSecAttrProtocolHTTP as String: (isHttps) ? kCFBooleanFalse : kCFBooleanTrue,
+     kSecAttrPort as String: port as CFString,
+     kSecAttrAccount as String: user  as CFString,
+     
+     // kSecMatchLimitOne indicates keychain should read
+     // only the most recent item matching this query
+     kSecMatchLimit as String: kSecMatchLimitOne,
+     
+     // kSecReturnData is set to kCFBooleanTrue in order
+     // to retrieve the data for the item
+     kSecReturnData as String: kCFBooleanTrue,
+     kSecReturnAttributes as String: kCFBooleanTrue
+     
+     
+     ]
+     
+     // SecItemCopyMatching will attempt to copy the item
+     // identified by query to the reference itemCopy
+     var itemCopy: AnyObject?
+     let status = SecItemCopyMatching(
+     query as CFDictionary,
+     &itemCopy
+     )
+     
+     // errSecItemNotFound is a special status indicating the
+     // read item does not exist. Throw itemNotFound so the
+     // client can determine whether or not to handle
+     // this case
+     guard status == errSecItemNotFound else {
+     return nil;
+     }
+     
+     // Any status other than errSecSuccess indicates the
+     // read operation failed.
+     guard status != errSecSuccess else {
+     return nil;
+     }
+     
+     // This implementation of KeychainInterface requires all
+     // items to be saved and read as Data.
+     guard let password = itemCopy as? Data else {
+     return nil;
+     }
+     
+     return String(decoding: password, as: UTF8.self)
+     }*/
     
 }
 
@@ -413,6 +403,7 @@ class PACResolver {
             { (info, proxies, error) in
                 let obj = Unmanaged<PACURLResolver>.fromOpaque(info).takeRetainedValue()
                 if let error = error {
+                    print(error);
                 } else {
                     obj.proxies = proxies;
                 }

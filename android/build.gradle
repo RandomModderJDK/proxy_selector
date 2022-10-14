@@ -1,4 +1,4 @@
-group 'com.example.proxy'
+group 'io.relution.proxy_selector'
 version '1.0-SNAPSHOT'
 
 buildscript {

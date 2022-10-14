@@ -1,6 +1,6 @@
-# proxy_example
+# proxy_selector_example
 
-Demonstrates how to use the proxy plugin.
+Demonstrates how to use the proxy_selector plugin.
 
 ## Getting Started
 

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:proxy/models/proxy_dto.dart';
+import 'package:proxy_selector/models/proxy_dto.dart';
+import 'package:proxy_selector/proxy_selector.dart';
 
-import 'package:proxy/proxy.dart';
+
+
 
 void main() {
   runApp(const MyApp());
@@ -26,7 +28,7 @@ class _MyAppState extends State<MyApp> {
   String? _error;
   String? _timeForExecution;
   bool _activateProxy = false;
-  Proxy _proxyPlugin = Proxy();
+  ProxySelector _proxyPlugin = ProxySelector();
 
   @override
   void initState() {
@@ -36,7 +38,7 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> _buttonCall() async {
-    _proxyPlugin = Proxy();
+    _proxyPlugin = ProxySelector();
 
     String? proxyAsList = "-";
     Response? response;

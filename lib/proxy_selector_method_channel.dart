@@ -2,16 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:proxy/models/proxy_dto.dart';
+import 'package:proxy_selector/models/proxy_dto.dart';
 
-import 'proxy_platform_interface.dart';
+import 'proxy_selector_platform_interface.dart';
 
-const String methodChannelName = "proxy";
+const String methodChannelName = "proxy_selector";
 const String getSystemProxyForUriMethodName = "getSystemProxyForUri";
 
-/// An implementation of [ProxyPlatform] that uses method channels.
-class MethodChannelProxy extends ProxyPlatform {
-  /// The method channel used to interact with the native platform.
+
+/// An implementation of [ProxySelectorPlatform] that uses method channels.
+class MethodChannelProxySelector extends ProxySelectorPlatform {
+ /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel = const MethodChannel(methodChannelName);
 
