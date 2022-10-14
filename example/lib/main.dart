@@ -130,7 +130,7 @@ class _MyAppState extends State<MyApp> {
               controller: textEditingController,
             ),
             Text(_proxy),
-            Text("mill to get proxy: $_timeForExecution"),
+            Text("ms to get proxy: $_timeForExecution"),
             if (_error != null && _error!.isNotEmpty)
               Text(
                 _error!,

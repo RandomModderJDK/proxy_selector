@@ -1,3 +1,4 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Initial release of `proxy_selector`
+* Supports iOS/Android -> Manual/PAC proxy
