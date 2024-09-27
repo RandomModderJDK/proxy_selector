@@ -1,6 +1,6 @@
 name: proxy_selector
 description: Lets you retrieve proxy settings for specific url.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/mwaylabs/proxy
 
 environment:
