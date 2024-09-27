@@ -360,7 +360,7 @@ class PACURLResolver {
                 CFRunLoopStop(CFRunLoopGetCurrent());
             },
             &context
-        ).takeUnretainedValue()
+        )
         assert(self.runLoopSource == nil)
         self.runLoopSource = rls
         CFRunLoopAddSource(CFRunLoopGetCurrent(), rls, CFRunLoopMode.defaultMode)
@@ -410,7 +410,7 @@ class PACResolver {
                 CFRunLoopStop(CFRunLoopGetCurrent());
             },
             &context
-        ).takeUnretainedValue()
+        )
         assert(self.runLoopSource == nil)
         self.runLoopSource = rls
         CFRunLoopAddSource(CFRunLoopGetCurrent(), rls, CFRunLoopMode.defaultMode)
