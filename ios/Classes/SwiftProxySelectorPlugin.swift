@@ -362,10 +362,10 @@ class PACURLResolver {
             &context
         )
         assert(self.runLoopSource == nil)
-        self.runLoopSource = rls
-        CFRunLoopAddSource(CFRunLoopGetCurrent(), rls, CFRunLoopMode.defaultMode)
+        self.runLoopSource = rls.takeRetainedValue()
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), self.runLoopSource, CFRunLoopMode.defaultMode)
         CFRunLoopRun();
-        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), rls, CFRunLoopMode.defaultMode);
+        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), self.runLoopSource, CFRunLoopMode.defaultMode);
         return proxies;
     }
 }
