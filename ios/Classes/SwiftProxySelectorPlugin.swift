@@ -343,31 +343,30 @@ class PACURLResolver {
      Calls CFNetworkExecuteProxyAutoConfigurationURL which create a RunLoop.
      Ths Runloop will be executed and result stored
      */
-
     private func startNextRequest(targetUrl: URL) -> CFArray?{
-
-            var context = CFStreamClientContext()
-            context.info = Unmanaged.passRetained(self).toOpaque()
-            let rls = CFNetworkExecuteProxyAutoConfigurationScript(
-                self.script as CFString,
-                targetUrl as CFURL,
-                { (info, proxies, error) in
-                    let obj = Unmanaged<PACURLResolver>.fromOpaque(info).takeRetainedValue()
-                    if let error = error {
-                        print(error);
-                    } else {
-                        obj.proxies = proxies;
-                    }
-                    CFRunLoopStop(CFRunLoopGetCurrent());
-                },
-                &context
-            )
-            assert(self.runLoopSource == nil)
-            self.runLoopSource = rls.takeRetainedValue()
-            CFRunLoopAddSource(CFRunLoopGetCurrent(), self.runLoopSource, CFRunLoopMode.defaultMode)
-            CFRunLoopRun();
-            CFRunLoopRemoveSource(CFRunLoopGetCurrent(), self.runLoopSource, CFRunLoopMode.defaultMode);
-            return proxies;
+        
+        var context = CFStreamClientContext()
+        context.info = Unmanaged.passRetained(self).toOpaque()
+        let rls = CFNetworkExecuteProxyAutoConfigurationURL(
+            self.url,
+            targetUrl as CFURL,
+            { (info, proxies, error) in
+                let obj = Unmanaged<PACURLResolver>.fromOpaque(info).takeRetainedValue()
+                if let error = error {
+                    print(error);
+                } else {
+                    obj.proxies = proxies;
+                }
+                CFRunLoopStop(CFRunLoopGetCurrent());
+            },
+            &context
+        )
+        assert(self.runLoopSource == nil)
+        self.runLoopSource = rls
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), rls, CFRunLoopMode.defaultMode)
+        CFRunLoopRun();
+        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), rls, CFRunLoopMode.defaultMode);
+        return proxies;
     }
 }
 
@@ -418,5 +417,5 @@ class PACResolver {
             CFRunLoopRun();
             CFRunLoopRemoveSource(CFRunLoopGetCurrent(), self.runLoopSource, CFRunLoopMode.defaultMode);
             return proxies;
-    }
+        }
 }
